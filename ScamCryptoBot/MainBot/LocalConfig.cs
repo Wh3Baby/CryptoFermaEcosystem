@@ -13,6 +13,7 @@ namespace ScamCryptoBot
         public static bool isBTCEnable = false;
         public static int PercentOfWorkers = 45;
         public static bool isAccepterEnable = false;
+        public static bool isWorkerEnabled = false;
         
     }
 }

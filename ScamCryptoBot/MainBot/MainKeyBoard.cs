@@ -127,6 +127,10 @@ namespace ScamCryptoBot
                     {
                         InlineKeyboardButton.WithCallbackData("⚙️Заявочник⚙️","mbtn_accepter")
                     },
+                    new InlineKeyboardButton []
+                    {
+                        InlineKeyboardButton.WithCallbackData("⚙Воркер бот⚙","mbtn_worker_bot")
+                    },
                     // In last
                     new InlineKeyboardButton[]
                     {
@@ -196,6 +200,27 @@ namespace ScamCryptoBot
                   new InlineKeyboardButton []
                     {
                         InlineKeyboardButton.WithCallbackData(status,"mbtn_bots_accepter_status")
+                    },
+                  // In last
+                    new InlineKeyboardButton[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("📲Назад📲","mbtn_bots_accepter_back")
+                    }
+               }
+               );
+            return inlineKeyboard;
+        }
+        public static InlineKeyboardMarkup BotsPanelWorker()
+        {
+            string status = "";
+            if (LocalConfig.isWorkerEnabled) status = "❌Остановить❌";
+            else status = "✅Запуск✅";
+            var inlineKeyboard = new InlineKeyboardMarkup(
+               new List<InlineKeyboardButton[]>()
+               {
+                  new InlineKeyboardButton []
+                    {
+                        InlineKeyboardButton.WithCallbackData(status,"mbtn_bots_worker_status")
                     },
                   // In last
                     new InlineKeyboardButton[]

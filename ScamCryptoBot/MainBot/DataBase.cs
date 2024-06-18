@@ -116,6 +116,19 @@ namespace ScamCryptoBot
                 MainClass.PrintColoredText("[-] The database file does not exist.",ConsoleColor.Red);
             }
         }
+        // TelegramID in chat == worker id? in database
+        public static bool IsWorker(int workerId) 
+        {
+            foreach(int idS in UserDataBase) 
+            {
+                if (idS == workerId) 
+                {
+                    
+                    return true;
+                }
+            }
+            return false;
+        }
 
     }
 }

