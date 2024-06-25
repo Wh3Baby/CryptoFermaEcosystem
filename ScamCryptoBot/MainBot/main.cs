@@ -11,7 +11,7 @@ namespace ScamCryptoBot
         private static ITelegramBotClient telegramClient;
         private static ReceiverOptions receiverOptions;
         private static string tokenBot;
-        private static string CryptoFermaVersion = " 1.1.2";
+        private static string CryptoFermaVersion = " 1.1.3";
 
         static async Task Main(string[] args)
         {
@@ -43,6 +43,7 @@ namespace ScamCryptoBot
             PrintColoredText($"[#] Check database.....", ConsoleColor.Cyan);
             await DataBase.LoadFromDataBase();
             int workersCount = DataBase.UserDataBase.Count;
+            int bansCount = DataBase.BanIDs.Count;
             PrintColoredText($"[+] Bot sucsessuly startet at: {tokenBot}\n" +
                 $"[+] Version:{CryptoFermaVersion}\n" +
                 $"[#] Admin ID: {LocalConfig.adminMainId}\n" +
@@ -50,6 +51,7 @@ namespace ScamCryptoBot
                 $"[#] BTC Bot status: {btcBotStatus}\n" +
                 $"[#] Accepter bot status: {accepterBotStatus}\n" +
                 $"[#] Workers in DataBase: {workersCount}\n" +
+                $"[#] Ban users in DataBase: {bansCount}" +
                 $"[#] Workers percent: {LocalConfig.PercentOfWorkers}%\n" +
                 $"[#] Develop by AM0R3M10: https://t.me/WH3BABY",ConsoleColor.DarkMagenta);
             await Task.Delay(-1);

@@ -7,8 +7,27 @@ namespace ScamCryptoBot
         
         public static List<int> UserDataBase = new List<int>();
         public static List<int> BanIDs = new List<int>();
-        public static List<string> wallets = new List<string>();
         public static List<(int, string)> WaitList = new List<(int, string)>();
+        public static List<int> AdminList = new List<int>();
+        public static List<int> TehnicalSupports = new List<int>();
+
+        public static void AddTehnicalSupports(int id) 
+        {
+            if (TehnicalSupports.Contains(id)) { return; }
+            TehnicalSupports.Add(id);
+        }
+        public static bool IsAdmin(int id) 
+        {
+            foreach (int i in AdminList)
+                {
+                if(i == id) { return true; }
+            }
+            return false;
+        }
+        public static void AddAdminToList (int id) 
+        {
+            AdminList.Add (id);
+        }
         public static async void AddToWaitList(int userToReg,string userName) 
         {
             if (WaitList.Contains((userToReg, userName))) 
@@ -24,10 +43,7 @@ namespace ScamCryptoBot
         {
             WaitList.Remove((id,userName));
         }
-        public static void AddWalletToConfig(string wallet)
-        {
-            wallets.Add(wallet); // 0 - NOT // 1 - BTC // 2 - ETH
-        }
+       
         // Primitive register
         public static void addToDataBase(int userId)
         {
@@ -68,6 +84,14 @@ namespace ScamCryptoBot
                 {
                     await writer.WriteLineAsync($"BannedID: {banId}");
                 }
+                foreach (int adminID in AdminList) 
+                {
+                    await writer.WriteLineAsync($"AdminID: {adminID}");
+                }
+                foreach(int thID in TehnicalSupports) 
+                {
+                    await writer.WriteAsync($"TpID: {thID}");
+                }
             }
 
         }
@@ -101,6 +125,22 @@ namespace ScamCryptoBot
                             if (int.TryParse(banIdString, out int banId))
                             {
                                 addToBanIDs(banId);
+                            }
+                        }
+                        else if(line.StartsWith("AdminIDL ")) 
+                        {
+                            string adminID = line.Substring(10);
+                            if(int.TryParse(adminID, out int adminId)) 
+                            {
+                                AddAdminToList(adminId);    
+                            }
+                        }
+                        else if (line.StartsWith("TpID ")) 
+                        {
+                            string TpID = line.Substring(10);
+                            if(int.TryParse(TpID, out int TpiD)) 
+                            {
+                                AddTehnicalSupports(TpiD);
                             }
                         }
                     }

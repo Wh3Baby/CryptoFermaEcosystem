@@ -31,6 +31,9 @@ namespace ScamCryptoBot
                 );
             return inlineKeyboard;
         }
+
+        
+        
         public static InlineKeyboardMarkup ExitButton() 
         {
             var inlineKeyboard = new InlineKeyboardMarkup(
@@ -76,6 +79,7 @@ namespace ScamCryptoBot
                 );
             return inlineKeyboard;
         }
+        // configurator panel -> Wallets
         public static InlineKeyboardMarkup ConfigPanel() 
         {
             var inlineKeyboard = new InlineKeyboardMarkup(
@@ -94,6 +98,10 @@ namespace ScamCryptoBot
                     {
                         InlineKeyboardButton.WithCallbackData("⚙️Добавить ТП⚙️","mbtn_main_add_tp")
                     },
+                    new InlineKeyboardButton [] 
+                    {
+                        InlineKeyboardButton.WithCallbackData("⚙️Кошельки⚙️","mbtn_main_wallets")
+                    },
                     // In last
                     new InlineKeyboardButton[]
                     {
@@ -103,6 +111,33 @@ namespace ScamCryptoBot
 
                 }
                 );
+            return inlineKeyboard;
+        }
+        public static InlineKeyboardMarkup ConfiguratorWalletsPanel() 
+        {
+            var inlineKeyboard = new InlineKeyboardMarkup(
+                 new List<InlineKeyboardButton[]>()
+                 {
+
+                    new InlineKeyboardButton[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("⚙️BTC⚙️","mbtn_config_wallets_btc")
+                    },
+                    new InlineKeyboardButton[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("⚙️ETH⚙️","mbtn_config_wallets_eth")
+                    },
+                    new InlineKeyboardButton[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("⚙️Notcoin⚙️","mbtn_config_wallets_notcoin")
+                    },
+                    // In last
+                    new InlineKeyboardButton[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("📲Назад📲","mbtn_config_back")
+                    }
+                 }
+                 );
             return inlineKeyboard;
         }
         public static InlineKeyboardMarkup BotsPanel() 
