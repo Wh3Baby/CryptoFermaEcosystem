@@ -21,7 +21,7 @@ namespace ScamCryptoBot
             timer.Elapsed += TimerElapsed;
             timer.Start();
 
-            tokenBot = "7037433641:AAG_Cpv9icgQMbm0AUD5E2zVtCUOvJfQfkM";
+            tokenBot = "7037433641:AAG_Cpv9icgQMbm0AUD5E2zVtCUOvJfQfkM"; // Создать ручной ввод токена с клавы, либо с файла конфигурации
 
             telegramClient = new TelegramBotClient(tokenBot);
             receiverOptions = new ReceiverOptions
@@ -54,7 +54,9 @@ namespace ScamCryptoBot
                 $"[#] Ban users in DataBase: {bansCount}" +
                 $"[#] Workers percent: {LocalConfig.PercentOfWorkers}%\n" +
                 $"[#] Develop by AM0R3M10: https://t.me/WH3BABY",ConsoleColor.DarkMagenta);
-            await Task.Delay(-1);
+            await Task.Delay(-1); // В таком состоянии он будет вечно запущен , можно установить на автоматике кол-во дней 
+                                  // к примеру аренда всего проекта на 30 дней == await Task.Delay(TimeSpan.FromDays(30));
+
 
 
         }
