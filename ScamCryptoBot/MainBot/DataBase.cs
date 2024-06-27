@@ -127,17 +127,17 @@ namespace ScamCryptoBot
                                 addToBanIDs(banId);
                             }
                         }
-                        else if(line.StartsWith("AdminIDL ")) 
+                        else if(line.StartsWith("AdminID: ")) 
                         {
-                            string adminID = line.Substring(10);
+                            string adminID = line.Substring(9);
                             if(int.TryParse(adminID, out int adminId)) 
                             {
                                 AddAdminToList(adminId);    
                             }
                         }
-                        else if (line.StartsWith("TpID ")) 
+                        else if (line.StartsWith("TpID: ")) 
                         {
-                            string TpID = line.Substring(10);
+                            string TpID = line.Substring(6);
                             if(int.TryParse(TpID, out int TpiD)) 
                             {
                                 AddTehnicalSupports(TpiD);

