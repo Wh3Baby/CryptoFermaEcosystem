@@ -25,7 +25,8 @@
         // TOKENS
         public static string maniToken = "";
 
-        //
+        // ADMIN FLAGS
+        public static bool setBanState = false;
 
         public static async Task LoadFromConfigFile()
             // TODO 

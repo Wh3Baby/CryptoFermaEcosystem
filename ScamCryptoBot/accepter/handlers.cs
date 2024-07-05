@@ -23,10 +23,13 @@ namespace ScamCryptoBot.accepter
                             case MessageType.Text:
                                 if (msg.Text == "/start")
                                 {
-                                    await bot.DeleteMessageAsync(chat.Id,msg.MessageId);
-                                    string text = $"👋Добро пожаловать в CryptoFerma!🌱\n" +
-                                        $"Этот бот-заявочник поможет тебе оставить заявку на вступление в наш проект.";
-                                    await bot.SendTextMessageAsync(chat, text,replyMarkup:keyboard.RegisterKeys(),parseMode:ParseMode.Html);
+                                    if (!DataBase.isBanned(Convert.ToInt32(chat.Id)))
+                                    {
+                                        await bot.DeleteMessageAsync(chat.Id, msg.MessageId);
+                                        string text = $"👋Добро пожаловать в CryptoFerma!🌱\n" +
+                                            $"Этот бот-заявочник поможет тебе оставить заявку на вступление в наш проект.";
+                                        await bot.SendTextMessageAsync(chat, text, replyMarkup: keyboard.RegisterKeys(), parseMode: ParseMode.Html);
+                                    }
                                 }
                                 if (RegisterSteps.RunRegister) 
                                 {

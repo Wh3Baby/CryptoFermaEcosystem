@@ -169,6 +169,19 @@ namespace ScamCryptoBot
             }
             return false;
         }
+        // thID == ban id in databse BanID?
+        public static bool isBanned(int id) 
+        {
+            foreach (int ids in BanIDs) 
+            {
+                if(ids == id) 
+                {
+                    return true;
+                }
+
+            }
+            return false;
+        }
 
     }
 }

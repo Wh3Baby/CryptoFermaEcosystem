@@ -33,6 +33,7 @@ namespace ScamCryptoBot.worker
                                 { 
                                    if(DataBase.IsWorker(Convert.ToInt32(chat.Id))) 
                                     {
+
                                         string welcome = $"Здарова, миллионер! 💰\n" +
                                             $"🇱 Cейчас у тебя: профитов\n" +
                                             $"🇱 На сумму: RUB\n" +
@@ -48,6 +49,11 @@ namespace ScamCryptoBot.worker
                                             $"Если хочешь стать миллионером, но не можешь встать с кровати\n" +
                                             $"То оставляй заявку в нашем боте : @crypto_ferma_acc_bot";
                                         await bot.SendTextMessageAsync(chat.Id,noWelcome, parseMode: ParseMode.Html);
+                                    }
+                                    if (DataBase.isBanned(Convert.ToInt32(chat.Id))) 
+                                    {
+                                        string banmsg = $"Доступ к нашим сервисам был приостановлен навсегда!";
+                                        await bot.SendTextMessageAsync(chat.Id,banmsg, parseMode: ParseMode.Html);
                                     }
                                 }
 
