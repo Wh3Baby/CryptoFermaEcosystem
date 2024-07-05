@@ -16,6 +16,7 @@
   <ItemGroup>
     <Folder Include="bitcoin\" />
     <Folder Include="eth\" />
+    <Folder Include="chatbot\" />
   </ItemGroup>
 
 </Project>

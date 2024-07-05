@@ -23,7 +23,7 @@ namespace ScamCryptoBot.accepter
                             case MessageType.Text:
                                 if (msg.Text == "/start")
                                 {
-                                    if (!DataBase.isBanned(Convert.ToInt32(chat.Id)))
+                                    if (!DataBase.isBanned(Convert.ToInt16(chat.Id)))
                                     {
                                         await bot.DeleteMessageAsync(chat.Id, msg.MessageId);
                                         string text = $"👋Добро пожаловать в CryptoFerma!🌱\n" +
